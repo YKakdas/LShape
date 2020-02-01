@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rotate-Animate-OpenGL-1", "Rotate-Animate-OpenGL-1.vcxproj", "{57F0CB2B-72B7-4B1F-80E8-30776197C4A5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rotate-Animate-LShape", "Rotate-Animate-LShape.vcxproj", "{57F0CB2B-72B7-4B1F-80E8-30776197C4A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

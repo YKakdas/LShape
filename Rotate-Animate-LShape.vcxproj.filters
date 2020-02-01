@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Rotate-Animate-OpenGL-1.cpp">
+    <ClCompile Include="..\..\lecture9\InitShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lecture9\InitShader.cpp">
+    <ClCompile Include="Rotate-Animate-LShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
