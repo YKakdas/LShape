@@ -15,8 +15,8 @@ GLint theta;
 const GLint width = 500;
 const GLint height = 500;
 
-GLfloat referenceX = -0.875;
-GLfloat referenceY = -1;
+GLfloat referenceX = 0.125;
+GLfloat referenceY = 0;
 
 GLint uniformTranslateToOriginPos;
 GLint uniformTranslateToMousePos;
@@ -36,12 +36,12 @@ enum modes { SINGLE_ROTATION_MODE, ANIMATION_MODE };
 int mode;
 
 point4 LShape[6] = {
-	point4(-1.0,-1.0 ,0.0, 1.0),
-	point4(-1.0,-0.65 ,0.0, 1.0),
-	point4(-0.9,-0.65 ,0.0, 1.0),
-	point4(-0.9,-0.9 ,0.0, 1.0),
-	point4(-0.75,-0.9 ,0.0, 1.0),
-	point4(-0.75,-1.0 ,0.0, 1.0),
+	point4(0.0,0.0 ,0.0, 1.0),
+	point4(0.0,0.35 ,0.0, 1.0),
+	point4(0.1,0.35 ,0.0, 1.0),
+	point4(0.1,0.1 ,0.0, 1.0),
+	point4(0.25,0.1 ,0.0, 1.0),
+	point4(0.25,0.0 ,0.0, 1.0),
 };
 color4 color = { 0.5,0.5,0.5,1.0 };
 
@@ -135,8 +135,8 @@ void myMouse(int btn, int state, int x, int y) {
 }
 
 void calculateAnimationTranslateVectors(GLint theta) {
-	translateToOrigin.x = 0.875;
-	translateToOrigin.y = 1;
+	translateToOrigin.x = -referenceX;
+	translateToOrigin.y = -referenceY;
 	translateToOrigin.z = 0.0;
 
 	translateForAnimate.x = -sin(theta * 2 * PI / 360) * 100 / 250;
@@ -180,7 +180,7 @@ int main(int argc, char **argv)
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(width, height);
-
+	glutInitWindowPosition(100, 100);
 	glutCreateWindow("Color Cube");
 	glewExperimental = GL_TRUE;
 	glewInit();
