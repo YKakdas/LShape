@@ -155,7 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\lecture9\InitShader.cpp" />
+    <ClCompile Include="InitShader.cpp" />
     <ClCompile Include="Rotate-Animate-LShape.cpp" />
   </ItemGroup>
   <ItemGroup>

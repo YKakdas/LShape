@@ -9,16 +9,25 @@ typedef vec4 point4;
 
 const int NumVertices = 12;
 const double PI = 3.141592653589793238463;
-mat4 translate;
 
-GLint theta = 5;
+GLint theta;
 
-GLint width = 500;
-GLint height = 500;
+const GLint width = 500;
+const GLint height = 500;
+
+GLfloat referenceX = -0.875;
+GLfloat referenceY = -1;
+
+GLint uniformTranslateToOriginPos;
+GLint uniformTranslateToMousePos;
+
+GLint thetaPosition;
+
 point4 points[NumVertices];
 color4 colors[NumVertices];
-point4 transformedPoints[NumVertices];
 
+vec3 translateToOrigin = { 0.0,0.0,0.0 };
+vec3 translateToMouse = { 0.0,0.0,0.0 };
 
 point4 LShape[6] = {
 	point4(-1.0,-1.0 ,0.0, 1.0),
@@ -28,28 +37,18 @@ point4 LShape[6] = {
 	point4(-0.75,-0.9 ,0.0, 1.0),
 	point4(-0.75,-1.0 ,0.0, 1.0),
 };
-
-
-// RGBA colors
-color4 vertex_colors[6] = {
-	color4(0.0, 0.0, 0.0, 1.0),  // black
-	color4(1.0, 0.0, 0.0, 1.0),  // red
-	color4(1.0, 1.0, 0.0, 1.0),  // yellow
-	color4(0.0, 1.0, 0.0, 1.0),  // green
-	color4(0.0, 0.0, 1.0, 1.0),  // blue
-	color4(0.0, 1.0, 1.0, 1.0)  // magenta
-};
+color4 color = { 0.5,0.5,0.5,1.0 };
 
 int Index = 0;
 
 void quad(int a, int b, int c, int d)
 {
-	colors[Index] = vertex_colors[a]; points[Index] = LShape[a]; Index++;
-	colors[Index] = vertex_colors[b]; points[Index] = LShape[b]; Index++;
-	colors[Index] = vertex_colors[c]; points[Index] = LShape[c]; Index++;
-	colors[Index] = vertex_colors[a]; points[Index] = LShape[a]; Index++;
-	colors[Index] = vertex_colors[c]; points[Index] = LShape[c]; Index++;
-	colors[Index] = vertex_colors[d]; points[Index] = LShape[d]; Index++;
+	colors[Index] = color; points[Index] = LShape[a]; Index++;
+	colors[Index] = color; points[Index] = LShape[b]; Index++;
+	colors[Index] = color; points[Index] = LShape[c]; Index++;
+	colors[Index] = color; points[Index] = LShape[a]; Index++;
+	colors[Index] = color; points[Index] = LShape[c]; Index++;
+	colors[Index] = color; points[Index] = LShape[d]; Index++;
 }
 
 void fillPointsAndColors()
@@ -60,7 +59,6 @@ void fillPointsAndColors()
 
 void init()
 {
-	//fillPointsAndColors();
 	fillPointsAndColors();
 	// Create a vertex array object
 	GLuint vao;
@@ -86,6 +84,9 @@ void init()
 	glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0,
 		BUFFER_OFFSET(0));
 
+	uniformTranslateToOriginPos = glGetUniformLocation(program, "translateToOrigin");
+	uniformTranslateToMousePos = glGetUniformLocation(program, "translateToMouse");
+	thetaPosition = glGetUniformLocation(program, "theta");
 	GLuint vColor = glGetAttribLocation(program, "vColor");
 	glEnableVertexAttribArray(vColor);
 	glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0,
@@ -93,90 +94,46 @@ void init()
 
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
-	translate = identity();
-	translate[0][3] = 0.875;
-	translate[1][3] = 1.4;
-	
-	for (int i = 0; i < NumVertices; i++) {
-		points[i] = translate * points[i];
-	}
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(points), points);
 }
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+	glUniform1f(thetaPosition,theta);
+	glUniform3fv(uniformTranslateToOriginPos, 1, translateToOrigin);
+	glUniform3fv(uniformTranslateToMousePos, 1, translateToMouse);
 	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
 
 	glutSwapBuffers();
 }
 
+void singleRotationMode(int x,int y) {
+	translateToOrigin.x = -referenceX;
+	translateToOrigin.y = -referenceY;
+	translateToOrigin.z = 0.0;
+	theta = 30;
+	translateToMouse.x = (GLfloat)x / 250.0 - 1;
+	translateToMouse.y = (GLfloat)y / 250.0 - 1;
+	translateToMouse.z = 0.0;
+	
+	glutPostRedisplay();
+}
 void myMouse(int btn, int state, int x, int y) {
 	if (btn == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-		
-		GLfloat newX = (GLfloat)x / 250.0 - 0.125;
-		translate = identity();
-		translate[0][3] = newX;
-		translate[1][3] = (GLfloat)(500-y)/250.0;
-	
-		
-		for (int i = 0; i < NumVertices; i++) {
-			points[i] = translate * points[i];
-		}
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(points), points);
-		glutPostRedisplay();
-
+		singleRotationMode(x, height - y);
 	}
 	if (btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-
-		GLfloat x = (points[0].x + points[10].x) / 2;
-		GLfloat y = (points[0].y);
-
-		translate[0][3] = -x;
-		translate[1][3] = -y;
 		
-		GLfloat angle = 2 * PI * 30 / 360;
+	}
+}
 
-		mat4 rotate = identity();
-		rotate[0][0] = cos(angle);
-		rotate[0][1] = -sin(angle);
-		rotate[1][0] = sin(angle);
-		rotate[1][1] = cos(angle);
-
-		mat4 translateBack = identity();
-		translateBack[0][3] = x;
-		translateBack[1][3] = y;
-
-		mat4 totalMatrix = translateBack *rotate*translate;
-		
-		for (int i = 0; i < NumVertices; i++) {
-			points[i] = totalMatrix * points[i];
-		}
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(points), points);
+void myKeyboard(unsigned char key, int x, int y) {
+	if (key == 'r') {
 		theta += 5;
 		glutPostRedisplay();
 	}
 }
 
-void changeAngle(int id) {
-	theta += 30;
-
-	GLfloat angle = 2 * PI * theta / 360;
-	mat4 rotate = identity();
-	rotate[0][0] = cos(angle);
-	rotate[0][1] = -sin(angle);
-	rotate[1][0] = sin(angle);
-	rotate[1][1] = cos(angle);
-
-	point4 tempPoints[NumVertices];
-	for (int i = 0; i < NumVertices; i++) {
-		tempPoints[i] = rotate * points[i];
-	}
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(tempPoints), tempPoints);
-	glutPostRedisplay();
-	glutTimerFunc(500, changeAngle, 0);
-}
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -191,7 +148,7 @@ int main(int argc, char **argv)
 
 	init();
 
-	glutTimerFunc(500, changeAngle, 0);
+	glutKeyboardFunc(myKeyboard);
 	glutMouseFunc(myMouse);
 	glutDisplayFunc(display);
 	glutMainLoop();
