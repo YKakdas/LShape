@@ -20,6 +20,7 @@ GLfloat referenceY = -1;
 
 GLint uniformTranslateToOriginPos;
 GLint uniformTranslateToMousePos;
+GLint uniformTranslateForAnimatePos;
 
 GLint thetaPosition;
 
@@ -28,6 +29,11 @@ color4 colors[NumVertices];
 
 vec3 translateToOrigin = { 0.0,0.0,0.0 };
 vec3 translateToMouse = { 0.0,0.0,0.0 };
+vec3 translateForAnimate = { 0.0,0.0,0.0 };
+
+enum modes { SINGLE_ROTATION_MODE, ANIMATION_MODE };
+
+int mode;
 
 point4 LShape[6] = {
 	point4(-1.0,-1.0 ,0.0, 1.0),
@@ -86,6 +92,7 @@ void init()
 
 	uniformTranslateToOriginPos = glGetUniformLocation(program, "translateToOrigin");
 	uniformTranslateToMousePos = glGetUniformLocation(program, "translateToMouse");
+	uniformTranslateForAnimatePos = glGetUniformLocation(program, "translateForAnimate");
 	thetaPosition = glGetUniformLocation(program, "theta");
 	GLuint vColor = glGetAttribLocation(program, "vColor");
 	glEnableVertexAttribArray(vColor);
@@ -99,15 +106,17 @@ void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glUniform1f(thetaPosition,theta);
+	glUniform1f(thetaPosition, theta);
 	glUniform3fv(uniformTranslateToOriginPos, 1, translateToOrigin);
 	glUniform3fv(uniformTranslateToMousePos, 1, translateToMouse);
+	glUniform3fv(uniformTranslateForAnimatePos, 1, translateForAnimate);
 	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
 
 	glutSwapBuffers();
 }
 
-void singleRotationMode(int x,int y) {
+void singleRotationMode(int x, int y) {
+	translateForAnimate = { 0.0,0.0,0.0 };
 	translateToOrigin.x = -referenceX;
 	translateToOrigin.y = -referenceY;
 	translateToOrigin.z = 0.0;
@@ -115,24 +124,54 @@ void singleRotationMode(int x,int y) {
 	translateToMouse.x = (GLfloat)x / 250.0 - 1;
 	translateToMouse.y = (GLfloat)y / 250.0 - 1;
 	translateToMouse.z = 0.0;
-	
+
 	glutPostRedisplay();
 }
 void myMouse(int btn, int state, int x, int y) {
 	if (btn == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		singleRotationMode(x, height - y);
-	}
-	if (btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		
+		mode = SINGLE_ROTATION_MODE;
 	}
 }
 
+void calculateAnimationTranslateVectors(GLint theta) {
+	translateToOrigin.x = 0.875;
+	translateToOrigin.y = 1;
+	translateToOrigin.z = 0.0;
+
+	translateForAnimate.x = -sin(theta * 2 * PI / 360) * 100 / 250;
+	translateForAnimate.y = cos(theta * 2 * PI / 360) * 100 / 250;
+	translateForAnimate.z = 0.0;
+
+	translateToMouse = { 0.0,0.0,0.0 };
+}
+
+void animate(int id) {
+	if (mode != ANIMATION_MODE) {
+		theta = 0;
+		return;
+	}
+	theta += 45;
+	calculateAnimationTranslateVectors(theta);
+	glutPostRedisplay();
+	glutTimerFunc(1000, animate, 0);
+}
 void myKeyboard(unsigned char key, int x, int y) {
-	if (key == 'r') {
-		theta += 5;
+	if (key == 'r' || key == 'R') {
+		if (mode == SINGLE_ROTATION_MODE) {
+			theta += 5;
+			glutPostRedisplay();
+		}
+	}
+	else if (key == 'a' || key == 'A') {
+		mode = ANIMATION_MODE;
+		theta = 0;
+		calculateAnimationTranslateVectors(theta);
 		glutPostRedisplay();
+		glutTimerFunc(1000, animate, 0);
 	}
 }
+
 
 int main(int argc, char **argv)
 {
