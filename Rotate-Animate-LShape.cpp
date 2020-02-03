@@ -1,54 +1,22 @@
 #include <iostream>
 #include "Angel.h"
+#include "Rotate-Animate-LShape.h"
 #include <Math.h>
-
-using namespace Angel;
-
-typedef vec4 color4;
-typedef vec4 point4;
-
-const int NumVertices = 12;
-const double PI = 3.141592653589793238463;
-
-GLint theta;
-
-const GLint width = 500;
-const GLint height = 500;
-
-GLfloat referenceX = 0.125;
-GLfloat referenceY = 0;
-
-GLint uniformTranslateToOriginPos;
-GLint uniformTranslateToMousePos;
-GLint uniformTranslateForAnimatePos;
-
-GLint thetaPosition;
-
-point4 points[NumVertices];
-color4 colors[NumVertices];
-
-vec3 translateToOrigin = { 0.0,0.0,0.0 };
-vec3 translateToMouse = { 0.0,0.0,0.0 };
-vec3 translateForAnimate = { 0.0,0.0,0.0 };
-
-enum modes { SINGLE_ROTATION_MODE, ANIMATION_MODE };
-
-int mode;
-
-point4 LShape[6] = {
-	point4(0.0,0.0 ,0.0, 1.0),
-	point4(0.0,0.35 ,0.0, 1.0),
-	point4(0.1,0.35 ,0.0, 1.0),
-	point4(0.1,0.1 ,0.0, 1.0),
-	point4(0.25,0.1 ,0.0, 1.0),
-	point4(0.25,0.0 ,0.0, 1.0),
-};
-color4 color = { 0.5,0.5,0.5,1.0 };
 
 int Index = 0;
 
-void quad(int a, int b, int c, int d)
-{
+
+
+/* vertices of LShape
+	1---2
+	 - -
+	 - -
+	 - -3
+	 -------------4
+	0-------------5
+*/
+
+void quad(int a, int b, int c, int d) {
 	colors[Index] = color; points[Index] = LShape[a]; Index++;
 	colors[Index] = color; points[Index] = LShape[b]; Index++;
 	colors[Index] = color; points[Index] = LShape[c]; Index++;
@@ -57,8 +25,7 @@ void quad(int a, int b, int c, int d)
 	colors[Index] = color; points[Index] = LShape[d]; Index++;
 }
 
-void fillPointsAndColors()
-{
+void fillPointsAndColors() { // to fill points array and colors array for LShape vertices
 	quad(0, 1, 2, 3);
 	quad(3, 4, 5, 0);
 }
@@ -66,6 +33,7 @@ void fillPointsAndColors()
 void init()
 {
 	fillPointsAndColors();
+
 	// Create a vertex array object
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
@@ -76,7 +44,7 @@ void init()
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(points) + sizeof(colors),
-		NULL, GL_DYNAMIC_DRAW);
+		NULL, GL_STATIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(points), points);
 	glBufferSubData(GL_ARRAY_BUFFER, sizeof(points), sizeof(colors), colors);
 
@@ -94,6 +62,7 @@ void init()
 	uniformTranslateToMousePos = glGetUniformLocation(program, "translateToMouse");
 	uniformTranslateForAnimatePos = glGetUniformLocation(program, "translateForAnimate");
 	thetaPosition = glGetUniformLocation(program, "theta");
+
 	GLuint vColor = glGetAttribLocation(program, "vColor");
 	glEnableVertexAttribArray(vColor);
 	glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0,
@@ -102,7 +71,7 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 }
-void display(void)
+void myDisplay(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -110,6 +79,7 @@ void display(void)
 	glUniform3fv(uniformTranslateToOriginPos, 1, translateToOrigin);
 	glUniform3fv(uniformTranslateToMousePos, 1, translateToMouse);
 	glUniform3fv(uniformTranslateForAnimatePos, 1, translateForAnimate);
+
 	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
 
 	glutSwapBuffers();
@@ -134,7 +104,7 @@ void myMouse(int btn, int state, int x, int y) {
 	}
 }
 
-void calculateAnimationTranslateVectors(GLint theta) {
+void animationMode(GLint theta) {
 	translateToOrigin.x = -referenceX;
 	translateToOrigin.y = -referenceY;
 	translateToOrigin.z = 0.0;
@@ -151,8 +121,8 @@ void animate(int id) {
 		theta = 0;
 		return;
 	}
-	theta += 45;
-	calculateAnimationTranslateVectors(theta);
+	theta += 360/n;
+	animationMode(theta);
 	glutPostRedisplay();
 	glutTimerFunc(1000, animate, 0);
 }
@@ -166,22 +136,19 @@ void myKeyboard(unsigned char key, int x, int y) {
 	else if (key == 'a' || key == 'A') {
 		mode = ANIMATION_MODE;
 		theta = 0;
-		calculateAnimationTranslateVectors(theta);
+		animationMode(theta);
 		glutPostRedisplay();
 		glutTimerFunc(1000, animate, 0);
 	}
 }
 
-
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	glutInit(&argc, argv);
-
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(width, height);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("Color Cube");
+	glutCreateWindow("LShape");
 	glewExperimental = GL_TRUE;
 	glewInit();
 
@@ -189,7 +156,7 @@ int main(int argc, char **argv)
 
 	glutKeyboardFunc(myKeyboard);
 	glutMouseFunc(myMouse);
-	glutDisplayFunc(display);
+	glutDisplayFunc(myDisplay);
 	glutMainLoop();
 	return 0;
 }

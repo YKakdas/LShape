@@ -35,5 +35,8 @@
     <ClInclude Include="CheckError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Rotate-Animate-LShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
