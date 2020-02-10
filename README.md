@@ -8,7 +8,7 @@ This program is to drawing, translating and animating the LShape.
 
 #### Program Modes:
 
-**1.** When game is run, initial 'L' character is drawn where the lower left corner of its bounding rectangle
+**1.** When the program is run, initially 'L' character is drawn where the lower left corner of its bounding rectangle
 coincides with (0,0).
 
 ![LShape Initial Position](Screenshots/LShapeInit.PNG)
