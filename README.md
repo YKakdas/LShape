@@ -25,4 +25,7 @@ radius 100 centered at (0,0). There will be n drawings in the animation. n is in
 
 ![LShape Single Rotation Mode](/Screenshots/LShapeAnimation.PNG)
 
+#### WARNING ####
+
+If you get error like "illegal non-ASCII character" from glsl files, change vshader.glsl and fshader.glsl file endings from crlf to lf, and then run the program again.
 #### Yaşar Can Kakdaş
