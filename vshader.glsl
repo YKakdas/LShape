@@ -37,6 +37,6 @@ void main()
 	translateForAnimate.x,translateForAnimate.y,translateForAnimate.z,1.0);
 	
 	
-  gl_Position = translateForAnimateMat *rotateZ*translatetranslateToOriginMat*vPosition;
+  gl_Position = translateToMouseMat* translateForAnimateMat *rotateZ*translatetranslateToOriginMat*vPosition;
   color = vColor;
 }
