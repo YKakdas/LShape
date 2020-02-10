@@ -11,7 +11,6 @@ uniform float theta;
 
 void main() 
 {
-
 	float angle = radians(theta);
 	float angleCos = cos(angle);
 	float angleSin = sin(angle);
@@ -35,7 +34,6 @@ void main()
 	0.0,1.0,0.0,0.0,
 	0.0,0.0,1.0,0.0,
 	translateForAnimate.x,translateForAnimate.y,translateForAnimate.z,1.0);
-	
 	
   gl_Position = translateToMouseMat* translateForAnimateMat *rotateZ*translatetranslateToOriginMat*vPosition;
   color = vColor;
