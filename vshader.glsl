@@ -9,8 +9,7 @@ uniform vec3 translateToMouse;
 uniform vec3 translateForAnimate;
 uniform float theta;
 
-void main() 
-{
+void main() {
 	float angle = radians(theta);
 	float angleCos = cos(angle);
 	float angleSin = sin(angle);
