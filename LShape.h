@@ -1,3 +1,10 @@
+#ifndef LSHAPE_H
+#define LSHAPE_H
+
+#include <iostream>
+#include "Angel.h"
+#include <Math.h>
+
 using namespace Angel;
 
 typedef vec4 color4;
@@ -42,6 +49,7 @@ point4 LShape[6] = {
 	point4(0.25,0.1 ,0.0, 1.0),
 	point4(0.25,0.0 ,0.0, 1.0),
 };
+
 color4 color = { 0.5,0.5,0.5,1.0 };
 
 void quad(int a, int b, int c, int d);
@@ -50,6 +58,7 @@ void init();
 void myDisplay(void);
 void singleRotationMode(int x, int y);
 void myMouse(int btn, int state, int x, int y);
-void animationMode(GLint theta);
 void animate(int id);
 void myKeyboard(unsigned char key, int x, int y);
+
+#endif

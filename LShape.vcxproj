@@ -22,9 +22,9 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{57F0CB2B-72B7-4B1F-80E8-30776197C4A5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>RotateAnimateLShape</RootNamespace>
+    <RootNamespace>LShape</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
-    <ProjectName>Rotate-Animate-LShape</ProjectName>
+    <ProjectName>LShape</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -156,13 +156,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="InitShader.cpp" />
-    <ClCompile Include="Rotate-Animate-LShape.cpp" />
+    <ClCompile Include="LShape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angel.h" />
     <ClInclude Include="CheckError.h" />
     <ClInclude Include="mat.h" />
-    <ClInclude Include="Rotate-Animate-LShape.h" />
+    <ClInclude Include="LShape.h" />
     <ClInclude Include="vec.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

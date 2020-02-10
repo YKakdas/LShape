@@ -1,11 +1,4 @@
-#include <iostream>
-#include "Angel.h"
-#include "Rotate-Animate-LShape.h"
-#include <Math.h>
-
-int Index = 0;
-
-
+#include "LShape.h"
 
 /* vertices of LShape
 	1---2
@@ -16,13 +9,15 @@ int Index = 0;
 	0-------------5
 */
 
+int index = 0;
+
 void quad(int a, int b, int c, int d) {
-	colors[Index] = color; points[Index] = LShape[a]; Index++;
-	colors[Index] = color; points[Index] = LShape[b]; Index++;
-	colors[Index] = color; points[Index] = LShape[c]; Index++;
-	colors[Index] = color; points[Index] = LShape[a]; Index++;
-	colors[Index] = color; points[Index] = LShape[c]; Index++;
-	colors[Index] = color; points[Index] = LShape[d]; Index++;
+	colors[index] = color; points[index] = LShape[a]; index++;
+	colors[index] = color; points[index] = LShape[b]; index++;
+	colors[index] = color; points[index] = LShape[c]; index++;
+	colors[index] = color; points[index] = LShape[a]; index++;
+	colors[index] = color; points[index] = LShape[c]; index++;
+	colors[index] = color; points[index] = LShape[d]; index++;
 }
 
 void fillPointsAndColors() { // to fill points array and colors array for LShape vertices
@@ -104,7 +99,19 @@ void myMouse(int btn, int state, int x, int y) {
 	}
 }
 
-void animationMode(GLint theta) {
+void animate(int id) {
+	if (mode != ANIMATION_MODE) {
+		theta = 0;
+		return;
+	}
+
+	if (id == 0) {
+		theta = 0;
+	}
+	else {
+		theta += 360 / n;
+	}
+	
 	translateToOrigin.x = -referenceX;
 	translateToOrigin.y = -referenceY;
 	translateToOrigin.z = 0.0;
@@ -114,17 +121,9 @@ void animationMode(GLint theta) {
 	translateForAnimate.z = 0.0;
 
 	translateToMouse = { 0.0,0.0,0.0 };
-}
 
-void animate(int id) {
-	if (mode != ANIMATION_MODE) {
-		theta = 0;
-		return;
-	}
-	theta += 360/n;
-	animationMode(theta);
 	glutPostRedisplay();
-	glutTimerFunc(1000, animate, 0);
+	glutTimerFunc(1000, animate, 1);
 }
 void myKeyboard(unsigned char key, int x, int y) {
 	if (key == 'r' || key == 'R') {
@@ -135,9 +134,6 @@ void myKeyboard(unsigned char key, int x, int y) {
 	}
 	else if (key == 'a' || key == 'A') {
 		mode = ANIMATION_MODE;
-		theta = 0;
-		animationMode(theta);
-		glutPostRedisplay();
 		glutTimerFunc(1000, animate, 0);
 	}
 }
