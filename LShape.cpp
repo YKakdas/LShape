@@ -1,17 +1,8 @@
 #include "LShape.h"
 
-/* vertices of LShape
-	1---2
-	 - -
-	 - -
-	 - -3
-	 -------------4
-	0-------------5
-*/
-
 int index = 0;
 
-void quad(int a, int b, int c, int d) {
+void quad(int a, int b, int c, int d) { // fill points arrray as quads
 	colors[index] = color; points[index] = LShape[a]; index++;
 	colors[index] = color; points[index] = LShape[b]; index++;
 	colors[index] = color; points[index] = LShape[c]; index++;
@@ -53,6 +44,7 @@ void init()
 	glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0,
 		BUFFER_OFFSET(0));
 
+	/* setting positions of uniform variables */
 	uniformTranslateToOriginPos = glGetUniformLocation(program, "translateToOrigin");
 	uniformTranslateToMousePos = glGetUniformLocation(program, "translateToMouse");
 	uniformTranslateForAnimatePos = glGetUniformLocation(program, "translateForAnimate");
@@ -70,16 +62,19 @@ void myDisplay(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	/* send uniform variables' value to vertex shader */
 	glUniform1f(thetaPosition, theta);
 	glUniform3fv(uniformTranslateToOriginPos, 1, translateToOrigin);
 	glUniform3fv(uniformTranslateToMousePos, 1, translateToMouse);
 	glUniform3fv(uniformTranslateForAnimatePos, 1, translateForAnimate);
 
+	/* draw the LShape */
 	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
 
 	glutSwapBuffers();
 }
 
+/* calculate translation vectors and angle fo translate to mouse coordinates and rotate 30 degrees from its reference point*/
 void singleRotationMode(int x, int y) {
 	translateForAnimate = { 0.0,0.0,0.0 };
 	translateToOrigin.x = -referenceX;
@@ -92,8 +87,9 @@ void singleRotationMode(int x, int y) {
 
 	glutPostRedisplay();
 }
+/* If right click is pressed, swap to single rotation mode */
 void myMouse(int btn, int state, int x, int y) {
-	if (btn == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+	if (btn == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) { 
 		singleRotationMode(x, height - y);
 		mode = SINGLE_ROTATION_MODE;
 	}
@@ -123,8 +119,11 @@ void animate(int id) {
 	translateToMouse = { 0.0,0.0,0.0 };
 
 	glutPostRedisplay();
-	glutTimerFunc(1000, animate, 1);
+	glutTimerFunc(500, animate, 1);
 }
+
+/* if mode is single rotation and key 'r' is pressed, increase theta to 5 if key 'a' is pressed
+   swap to animation mode and set its timer */
 void myKeyboard(unsigned char key, int x, int y) {
 	if (key == 'r' || key == 'R') {
 		if (mode == SINGLE_ROTATION_MODE) {
@@ -134,7 +133,7 @@ void myKeyboard(unsigned char key, int x, int y) {
 	}
 	else if (key == 'a' || key == 'A') {
 		mode = ANIMATION_MODE;
-		glutTimerFunc(1000, animate, 0);
+		glutTimerFunc(500, animate, 0);
 	}
 }
 

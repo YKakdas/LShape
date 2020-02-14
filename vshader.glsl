@@ -14,26 +14,26 @@ void main() {
 	float angleCos = cos(angle);
 	float angleSin = sin(angle);
 	
-	mat4 translatetranslateToOriginMat = mat4(1.0,0.0,0.0,0.0,
-	0.0,1.0,0.0,0.0,
-	0.0,0.0,1.0,0.0,
-	translateToOrigin.x,translateToOrigin.y,translateToOrigin.z,1.0);
+	mat4 translateToOriginMat = mat4(1.0,0.0,0.0,0.0,
+											0.0,1.0,0.0,0.0,
+											0.0,0.0,1.0,0.0,
+											translateToOrigin.x,translateToOrigin.y,translateToOrigin.z,1.0);
 	
 	mat4 rotateZ = mat4( angleCos, angleSin, 0.0, 0.0,
-		    -angleSin,  angleCos, 0.0, 0.0,
-		    0.0,  0.0, 1.0, 0.0,
-		    0.0,  0.0, 0.0, 1.0 );
+						-angleSin,  angleCos, 0.0, 0.0,
+						 0.0,  0.0, 1.0, 0.0,
+						 0.0,  0.0, 0.0, 1.0 );
 			
 	mat4 translateToMouseMat = mat4(1.0,0.0,0.0,0.0,
-	0.0,1.0,0.0,0.0,
-	0.0,0.0,1.0,0.0,
-	translateToMouse.x,translateToMouse.y,translateToMouse.z,1.0);
+									0.0,1.0,0.0,0.0,
+									0.0,0.0,1.0,0.0,
+									translateToMouse.x,translateToMouse.y,translateToMouse.z,1.0);
 	
 	mat4 translateForAnimateMat = mat4(1.0,0.0,0.0,0.0,
-	0.0,1.0,0.0,0.0,
-	0.0,0.0,1.0,0.0,
-	translateForAnimate.x,translateForAnimate.y,translateForAnimate.z,1.0);
+									   0.0,1.0,0.0,0.0,
+									   0.0,0.0,1.0,0.0,
+									   translateForAnimate.x,translateForAnimate.y,translateForAnimate.z,1.0);
 	
-  gl_Position = translateToMouseMat* translateForAnimateMat *rotateZ*translatetranslateToOriginMat*vPosition;
+  gl_Position = translateToMouseMat* translateForAnimateMat *rotateZ*translateToOriginMat*vPosition;
   color = vColor;
 }
